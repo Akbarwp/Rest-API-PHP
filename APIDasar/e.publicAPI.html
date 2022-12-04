@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Website Public API</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.39.1/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <!-- Awal Navbar -->
+    <div class="navbar bg-base-100 shadow-sm shadow-slate-700 fixed z-20 top-0 left-0">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0"
+                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a id="btnHome">Home</a></li>
+                </ul>
+            </div>
+            <a class="btn btn-ghost normal-case text-xl ml-20" id="btnTitle">
+                <span class="text-blue-500">
+                    <svg role="img" class="fill-current inline" width="33" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <title>CSS3</title>
+                        <path
+                            d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z" />
+                    </svg>
+                    <span class="text-white">Anime Anime</span>
+                </span>
+            </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal p-0">
+                <li><a id="btnHome">Home</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- Akhir Navbar -->
+
+    <!-- Awal Section -->
+    <section id="allMenu" class="pt-20">
+        <div class="container">
+            <div class="w-full px-5 mt-3 ml-28 mb-10">
+                <div class="form-control w-full max-w-xl mx-auto">
+                    <span class="label-text text-5xl font-semibold text-center mb-5">Search Anime</span>
+                    <input id="searchInput" type="text" placeholder="Type here"
+                        class="input input-bordered w-full text-white placeholder:text-rose-500 focus:border-rose-500" />
+                    <button id="btnSearch" class="btn btn-success mt-3">Search</button>
+                </div>
+            </div>
+
+            <div class="w-full px-5 mb-10">
+                <div id="animeList" class="flex flex-wrap gap-4 justify-center item-center">
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Akhir Section -->
+
+
+    <!-- Modal -->
+    <input type="checkbox" id="my-modal-6" class="modal-toggle" />
+    <div class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box w-full max-w-5xl flex flex-wrap gap-4 justify-center item-center" id="modalBox" for="">
+
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+    <script>
+        anime();
+        $('#btnTitle').on('click', function () {
+            anime();
+        });
+        $('#btnHome').on('click', function () {
+            anime();
+        });
+        function anime() {
+            $('#animeList').html('');
+            $.getJSON('https://anime-facts-rest-api.herokuapp.com/api/v1/', function (result) {
+                let anime = result.data;
+                $.each(anime, function (index, data) {
+                    $('#animeList').append(`
+                    <div class="card card-compact w-96 bg-slate-300 shadow-xl shadow-slate-700">
+                        <figure><img src="`+ data.anime_img + `" alt="Anime Image" width="100%" /></figure>
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl text-slate-700 font-bold">`+ data.anime_name + `</h2>
+                            <div class="card-actions justify-end">
+                                <label for="my-modal-6" id="btnFact" data-name"`+ data.anime_name + `" class="btn btn-primary">Facts</label>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                });
+            });
+        }
+
+        $('#animeList').on('click', '#btnFact', function () {
+            $('#modalBox').html('');
+            $.ajax({
+                url: "https://anime-facts-rest-api.herokuapp.com/api/v1/" + $(this).data('name'),
+                method: "get",
+                dataType: "json",
+                success: function (result) {
+                    let anime = result.data;
+                    $('#modalBox').append(`
+                        <label for="my-modal-6" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                    `);
+                    $.each(anime, function (index, data) {
+                        $('#modalBox').append(`
+                        <div class="card card-compact w-96 bg-slate-300 shadow-xl shadow-slate-700">
+                            <div class="card-body">
+                                <p class="card-title text-xl text-slate-600 font-medium">`+ data.fact + `</p>
+                            </div>
+                        </div>
+                        `);
+                    });
+                },
+                error: function (result) {
+                    $('#animeList').html(`<h1 class="text-center text-3xl font-bold text-error uppercase">Anime not Found!!!</h1>`);
+                }
+            });
+        });
+
+        $('#btnSearch').on('click', function () {
+            searchAnime();
+        });
+
+        $('#searchInput').on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                searchAnime();
+            }
+        });
+
+        function searchAnime() {
+            $('#animeList').html('');
+            if ($('#searchInput').val() == '') {
+                $('#animeList').html(`<h1 class="text-center text-3xl font-bold text-error uppercase">Please insert the anime name!!!</h1>`);
+
+            } else {
+                $.ajax({
+                    url: "https://anime-facts-rest-api.herokuapp.com/api/v1/" + $('#searchInput').val(),
+                    method: "get",
+                    dataType: "json",
+                    success: function (result) {
+                        let anime = result;
+                        $('#animeList').append(`
+                        <div class="card card-compact w-96 bg-slate-300 shadow-xl shadow-slate-700">
+                            <figure><img src="`+ anime.img + `" alt="Anime Image" width="100%" /></figure>
+                            <div class="card-body">
+                                <h2 class="card-title text-2xl text-slate-700 font-bold">`+ $('#searchInput').val() + `</h2>
+                                <div class="card-actions justify-end">
+                                    <button class="btn btn-primary">Detail</button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    },
+                    error: function (result) {
+                        $('#animeList').html(`<h1 class="text-center text-3xl font-bold text-error uppercase">Anime not Found!!!</h1>`);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

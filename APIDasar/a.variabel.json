@@ -1,0 +1,26 @@
+[
+    {
+        "nama": "Ucup",
+        "umur": 20,
+        "tinggi": 1.7,
+        "telepon": "081234567890",
+        "keren": true,
+        "hobi": [
+            "Gamer",
+            "Memancing",
+            "Memasak"
+        ]
+    },
+    {
+        "nama": "Slamet",
+        "umur": 23,
+        "tinggi": 1.75,
+        "telepon": "0810987654321",
+        "keren": false,
+        "hobi": [
+            "Membaca",
+            "Koding",
+            "Memasak"
+        ]
+    }
+]

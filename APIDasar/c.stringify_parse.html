@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Latihan JSON</title>
+
+    <style>
+        .judul {
+            margin-top: 20%;
+            margin-left: 33%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="judul">
+        <h1>Latihan JSON.stringify() & JSON.parse()</h1>
+        <i>cek inspect atau tekan F12</i>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+        // Stringify --> Object to JSON
+        let manusia = {
+            "nama": "Ucup",
+            "umur": 20,
+            "tinggi": 1.7,
+            "telepon": "081234567890",
+            "keren": true,
+            "hobi": [
+                "Gamer",
+                "Memancing",
+                "Memasak"
+            ]
+        }
+
+        console.log(JSON.stringify(manusia));
+
+
+        // Parse --> JSON to Object
+        // Menggunakan XML
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let manusia = JSON.parse(this.responseText);
+                
+                console.log(manusia);
+            }
+        }
+        xhr.open('GET', 'a.variabel.json', true);
+        xhr.send();
+
+
+        // Menggunakan JQuery
+        $.getJSON("a.variabel.json",
+            function (data) {
+                console.log(data);
+            }
+        );
+    </script>
+</body>
+
+</html>
